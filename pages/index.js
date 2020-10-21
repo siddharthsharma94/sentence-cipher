@@ -1,65 +1,90 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import React, {useState} from 'react'
+import {
+  ThemeProvider,
+  CSSReset,
+  theme,
+  Tag,
+  Box,
+  Heading,
+  Input,
+  Stack,
+  Button,
+  Text,
+  Textarea  
+} from '@chakra-ui/core'
 
-export default function Home() {
+import * as _ from 'lodash';
+import { result } from 'lodash';
+const App = () => {
+
+  const [inputText, setInputText] = useState(null)
+  const [parsedLetters, setParsedLetters] = useState(null)
+  const [words, setWords] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const shuffleText = v=>[...v].sort(_=>Math.random()-.5).join('');
+
+  const parseText = async () => {
+    let text = inputText.replace(/[^A-Z0-9]/ig, "").split("");
+    console.log(text)
+    await setParsedLetters(text);
+    Promise.all(text.map(async(letter) => {
+        const response = await fetch(`https://api.datamuse.com/words?sp=${letter}*`).then(res => res.json());
+        const word = response[text.length];
+        return word.word
+      })).then(res => {
+        setIsLoading(false);
+        setWords(res);
+        console.log(res);
+      });
+    }
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+  <ThemeProvider theme={theme}>
+    <CSSReset />
+    <Box backgroundColor="whiteAlpha.500">
+      <Box backgroundColor="blackAlpha.100" width="100%">
+        <Heading size="2xl" p={16} textAlign="center">
+          Cipher
+        </Heading>
+      </Box>
+      <Box>
+        <Stack
+          maxWidth="800px"
+          ml="auto"
+          mr="auto"
+          p={12}
+          spacing={5}
+          justifyContent="center"
+          alignItems="flex-start"
         >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
+          <Heading>Enter some text</Heading>
+          <Text>
+            We'll encode this text into a key and generate a ciphered out
+            message for you.
+          </Text>
+          <Textarea onChange={(e) => setInputText(e.target.value)} />
+          <Button loadingText="Talking to our Cipher Robots..." isLoading={isLoading} 
+            onClick={() => {
+              parseText();
+              return setIsLoading(!isLoading)
+            }}
+            variantColor="messenger">Cipher me</Button>
+          {words && 
+          <>
+            <Heading mb={3}>Ciphered Words</Heading>
+            <Textarea cursor="pointer" isDisabled value={_.capitalize(_.toLower(words.join(" "))) + "."} />
+            <Stack isInline spacing={4} my={8}>
+                <Heading>Ciphered Sentence</Heading>
+                <Tag size={"sm"}>Coming Soon</Tag>
+            </Stack>
+
+          </>
+          }
+        </Stack>
+      </Box>
+    </Box>
+  </ThemeProvider>
   )
 }
+export default App;

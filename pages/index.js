@@ -14,7 +14,6 @@ import {
 } from '@chakra-ui/core'
 
 import * as _ from 'lodash';
-import { result } from 'lodash';
 const App = () => {
 
   const [inputText, setInputText] = useState(null)
@@ -33,7 +32,6 @@ const App = () => {
         const response = await fetch(`https://api.datamuse.com/words?sp=${letter}*&lc=${ ''}`).then(res => res.json());
         const word = response[text.length].word || response[0].word;
         previousWords.push(word);
-        console.log({previousWords});
         return word;
       })).then(res => {
         setIsLoading(false);

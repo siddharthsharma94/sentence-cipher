@@ -3,14 +3,14 @@ import {
   ThemeProvider,
   CSSReset,
   theme,
-  Tag,
   Box,
   Heading,
-  Input,
   Stack,
   Button,
+  Badge,
   Text,
-  Textarea  
+  Textarea,  
+  Link
 } from '@chakra-ui/core'
 
 import * as _ from 'lodash';
@@ -45,10 +45,11 @@ const App = () => {
   <ThemeProvider theme={theme}>
     <CSSReset />
     <Box backgroundColor="whiteAlpha.500">
-      <Box backgroundColor="blackAlpha.100" width="100%">
+      <Box p={6} display="flex" flexDirection="column" backgroundColor="blackAlpha.100" width="100%">
         <Heading size="2xl" p={16} textAlign="center">
           Cipher
         </Heading>
+        <Link mx="auto" maxW="300px" textAlign="center" href="https://thesiddd.com" target="_blank"> made by thesiddd</Link>
       </Box>
       <Box>
         <Stack
@@ -76,11 +77,7 @@ const App = () => {
           <>
             <Heading mb={3}>Ciphered Words</Heading>
             <Textarea cursor="pointer" isDisabled value={_.capitalize(_.toLower(words.join(" "))) + "."} />
-            <Stack isInline spacing={4} my={8}>
-                <Heading>Ciphered Sentence</Heading>
-                <Tag size={"sm"}>Coming Soon</Tag>
-            </Stack>
-
+                <Heading mt={4}>Ciphered Sentence<Badge p={2} variantColor="green" variant="outline" ml={4}>Coming Soon</Badge></Heading>
           </>
           }
         </Stack>

@@ -26,7 +26,6 @@ const App = () => {
 
   const parseText = async () => {
     let text = inputText.replace(/[^A-Z0-9]/ig, "").split("");
-    console.log(text)
     await setParsedLetters(text);
     Promise.all(text.map(async(letter) => {
         const response = await fetch(`https://api.datamuse.com/words?sp=${letter}*`).then(res => res.json());
@@ -35,7 +34,6 @@ const App = () => {
       })).then(res => {
         setIsLoading(false);
         setWords(res);
-        console.log(res);
       });
     }
 

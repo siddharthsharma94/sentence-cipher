@@ -27,10 +27,14 @@ const App = () => {
   const parseText = async () => {
     let text = inputText.replace(/[^A-Z0-9]/ig, "").split("");
     await setParsedLetters(text);
-    Promise.all(text.map(async(letter) => {
-        const response = await fetch(`https://api.datamuse.com/words?sp=${letter}*`).then(res => res.json());
-        const word = response[text.length];
-        return word.word
+    const previousWords = [];
+    // https://api.datamuse.com/words?lc=with&sp=w*
+    Promise.all(text.map(async(letter,index) => {
+        const response = await fetch(`https://api.datamuse.com/words?sp=${letter}*&lc=${ ''}`).then(res => res.json());
+        const word = response[text.length].word || response[0].word;
+        previousWords.push(word);
+        console.log({previousWords});
+        return word;
       })).then(res => {
         setIsLoading(false);
         setWords(res);

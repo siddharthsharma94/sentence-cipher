@@ -77,7 +77,7 @@ const App = () => {
           <>
             <Heading mb={3}>Ciphered Words</Heading>
             <Textarea cursor="pointer" isDisabled value={_.capitalize(_.toLower(words.join(" "))) + "."} />
-                <Heading mt={4}>Ciphered Sentence<Badge p={2} variantColor="green" variant="outline" ml={4}>Coming Soon</Badge></Heading>
+            <Heading size={["md","xl"]} mt={4}>Ciphered Sentence<Badge p={[1,2]} variantColor="green" variant="outline" ml={4}>Coming Soon</Badge></Heading>
           </>
           }
         </Stack>
